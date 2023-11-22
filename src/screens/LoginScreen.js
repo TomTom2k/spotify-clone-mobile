@@ -1,23 +1,26 @@
-import { Text, View, Pressable } from 'react-native';
 import React, { useEffect } from 'react';
-
+import { Text, View, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as WebBrowser from 'expo-web-browser';
-import { useAuthRequest, makeRedirectUri } from 'expo-auth-session';
-
+import {
+	useAuthRequest,
+	makeRedirectUri,
+	ResponseType,
+} from 'expo-auth-session';
 import { Entypo, Feather, FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 
 WebBrowser.maybeCompleteAuthSession();
 
-// Endpoint
 const discovery = {
 	authorizationEndpoint: 'https://accounts.spotify.com/authorize',
 	tokenEndpoint: 'https://accounts.spotify.com/api/token',
 };
+
 const config = {
+	responseType: ResponseType.Token,
 	clientId: 'e330ee38b91f4d20838b553b5f5697fd',
 	scopes: [
 		'user-read-email',
@@ -35,42 +38,45 @@ const config = {
 		path: '/--/spotify-auth-callback',
 	}),
 };
+
 const LoginScreen = () => {
 	const navigation = useNavigation();
 	const [request, response, promptAsync] = useAuthRequest(config, discovery);
+
 	useEffect(() => {
 		const checkTokenValidity = async () => {
-			try {
-				const code = await AsyncStorage.getItem('code');
-				const state = await AsyncStorage.getItem('state');
+			const accessToken = await AsyncStorage.getItem('token');
+			const timeExpiresInSeconds = await AsyncStorage.getItem(
+				'timeExpiresInSeconds'
+			);
 
-				if (code && state) {
-					navigation.replace('Main');
+			if (accessToken && timeExpiresInSeconds) {
+				if (parseInt(Date.now()) < parseInt(timeExpiresInSeconds)) {
+					// here the token is still valid
+					navigation.navigate('Main');
 				} else {
-					await AsyncStorage.removeItem('code');
-					await AsyncStorage.removeItem('state');
+					AsyncStorage.removeItem('token');
+					AsyncStorage.removeItem('timeExpiresInSeconds');
 				}
-			} catch (error) {
-				console.error('Error login:', error);
 			}
 		};
-
 		checkTokenValidity();
 	}, [response]);
 
 	const authenticate = async () => {
 		try {
 			const result = await promptAsync();
+			if (result?.params) {
+				const timeExpiresInSeconds =
+					Date.now() + result.params.expires_in;
+				const token = result.params.access_token;
 
-			if (result?.type === 'success') {
-				const { code, state } = result.params;
-
-				await AsyncStorage.setItem('code', code);
-				await AsyncStorage.setItem('state', state);
-
+				AsyncStorage.setItem('token', token);
+				AsyncStorage.setItem(
+					'timeExpiresInSeconds',
+					timeExpiresInSeconds.toString()
+				);
 				navigation.navigate('Main');
-			} else {
-				console.error('Authentication failed or cancelled:', result);
 			}
 		} catch (error) {
 			console.error('Authentication error:', error);
@@ -98,8 +104,7 @@ const LoginScreen = () => {
 				>
 					Hàng triệu bài hát. Miễn phí trên Spotify
 				</Text>
-
-				<View>
+				<View style={{ padding: 20 }}>
 					<Pressable
 						style={{
 							backgroundColor: '#1Db954',
