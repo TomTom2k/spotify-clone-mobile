@@ -49,8 +49,10 @@ const LoginScreen = () => {
 			const timeExpiresInSeconds = await AsyncStorage.getItem(
 				'timeExpiresInSeconds'
 			);
-
-			if (accessToken && timeExpiresInSeconds) {
+			console.log(accessToken);
+			console.log(timeExpiresInSeconds);
+			console.log(Date.now());
+			if (accessToken && timeExpiresInSeconds > Date.now()) {
 				if (parseInt(Date.now()) < parseInt(timeExpiresInSeconds)) {
 					// here the token is still valid
 					navigation.navigate('Main');
@@ -68,7 +70,7 @@ const LoginScreen = () => {
 			const result = await promptAsync();
 			if (result?.params) {
 				const timeExpiresInSeconds =
-					Date.now() + result.params.expires_in;
+					parseInt(Date.now()) + parseInt(result.params.expires_in);
 				const token = result.params.access_token;
 
 				AsyncStorage.setItem('token', token);
