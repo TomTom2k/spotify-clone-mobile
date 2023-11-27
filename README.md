@@ -1,4 +1,5 @@
 #Tên project: Spotify mobile clone
+### Figma: https://www.figma.com/proto/q85yPBrXuRyJy0SIf3mEKE/spotify?page-id=0%3A1&type=design&node-id=2-2&viewport=102%2C231%2C0.31&t=jUxs7Ua6lKmGjWI7-1&scaling=scale-down&starting-point-node-id=2%3A2&mode=design
 
 ### Mô tả
 
