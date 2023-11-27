@@ -232,7 +232,7 @@ const LikedSongsScreen = () => {
 							<TextInput
 								value={input}
 								onChangeText={(text) => handleInputChange(text)}
-								placeholder="Find in Liked songs"
+								placeholder="Tìm kiếm bài hát yêu thích"
 								placeholderTextColor={'white'}
 								style={{ fontWeight: '500', color: 'white' }}
 							/>
@@ -260,7 +260,7 @@ const LikedSongsScreen = () => {
 								color: 'white',
 							}}
 						>
-							Liked Songs
+							Bài hát yêu thích
 						</Text>
 						<Text
 							style={{
@@ -269,7 +269,7 @@ const LikedSongsScreen = () => {
 								marginTop: 5,
 							}}
 						>
-							430 songs
+							{savedTracks.length}
 						</Text>
 					</View>
 

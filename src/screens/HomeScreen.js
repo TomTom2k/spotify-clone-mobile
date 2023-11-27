@@ -239,7 +239,7 @@ const HomeScreen = () => {
 								fontWeight: 'bold',
 							}}
 						>
-							Liked Songs
+							Bài hát yêu thích
 						</Text>
 					</Pressable>
 
@@ -294,7 +294,7 @@ const HomeScreen = () => {
 							marginTop: 10,
 						}}
 					>
-						Your Top Artists
+						Nghệ sĩ dành cho bạn
 					</Text>
 
 					<ScrollView
@@ -317,7 +317,7 @@ const HomeScreen = () => {
 							marginTop: 10,
 						}}
 					>
-						Recently Played
+						Chương trình vừa phát
 					</Text>
 					<FlatList
 						data={recentlyPlayed}
